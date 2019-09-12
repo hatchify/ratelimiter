@@ -22,7 +22,7 @@ func TestRateLimiter_Acquire(t *testing.T) {
 	for _, tc := range tcs {
 		start := time.Now()
 		for i := 0; i < tc.count; i++ {
-			r.Acquire()
+			r.Acquire(func() {})
 		}
 		end := time.Now()
 
@@ -39,7 +39,7 @@ func TestRateLimiter_Close(t *testing.T) {
 	r := New(time.Millisecond * 100)
 	// The wait functionality is tested within the waiter tests. This test is to ensure
 	// there are no errors/panics when the working pieces are put together.
-	r.Acquire()
+	r.Acquire(func() {})
 }
 
 func newAcquireTestCase(count int, minDelta, maxDelta time.Duration) (a acquireTestCase) {
@@ -65,7 +65,9 @@ func ExampleRateLimiter_Acquire() {
 	// Initialize rate limiter
 	r := New(time.Second)
 	// Acquire a new request
-	r.Acquire()
+	r.Acquire(func() {
+		// Do stuff here
+	})
 }
 
 func ExampleRateLimiter_Close() {
