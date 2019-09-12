@@ -1,6 +1,7 @@
 package ratelimiter
 
 import (
+	"fmt"
 	"testing"
 	"time"
 )
@@ -52,4 +53,27 @@ type acquireTestCase struct {
 	count    int
 	minDelta time.Duration
 	maxDelta time.Duration
+}
+
+func ExampleNew() {
+	// Initialize rate limiter
+	r := New(time.Second)
+	fmt.Printf("RateLimiter (%v) is ready to use!\n", r)
+}
+
+func ExampleRateLimiter_Acquire() {
+	// Initialize rate limiter
+	r := New(time.Second)
+	// Acquire a new request
+	r.Acquire()
+}
+
+func ExampleRateLimiter_Close() {
+	// Initialize rate limiter
+	r := New(time.Second)
+
+	// Do lots of great tasks here
+
+	// Close rate limiter
+	r.Close()
 }
