@@ -10,6 +10,7 @@ func TestNew(t *testing.T) {
 	// If new rate limiter is acquired without panics, we consider this test a pass
 	New(time.Millisecond * 100)
 }
+
 func TestRateLimiter_Acquire(t *testing.T) {
 	// Procure a new rate limiter with a interval of 100ms
 	r := New(time.Millisecond * 10)
