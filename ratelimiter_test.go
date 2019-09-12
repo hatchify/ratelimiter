@@ -14,9 +14,9 @@ func TestRateLimiter_Acquire(t *testing.T) {
 	// Procure a new rate limiter with a interval of 100ms
 	r := New(time.Millisecond * 10)
 	tcs := []acquireTestCase{
-		newAcquireTestCase(10, time.Millisecond*90, time.Millisecond*120),
-		newAcquireTestCase(11, time.Millisecond*100, time.Millisecond*130),
-		newAcquireTestCase(100, time.Millisecond*900, time.Millisecond*1300),
+		newAcquireTestCase(10, time.Millisecond*90),
+		newAcquireTestCase(11, time.Millisecond*100),
+		newAcquireTestCase(100, time.Millisecond*900),
 	}
 
 	for _, tc := range tcs {
@@ -26,11 +26,9 @@ func TestRateLimiter_Acquire(t *testing.T) {
 		}
 		end := time.Now()
 
-		delta := end.Sub(start)
-		if delta < tc.minDelta {
-			t.Fatalf("requests were acquired at too quick of a rate! Total time was %v, should have been over %v", delta, tc.minDelta)
-		} else if delta > tc.maxDelta {
-			t.Fatalf("requests were acquired at too slow of a rate! Total time was %v, should have been under %v", delta, tc.maxDelta)
+		duration := end.Sub(start)
+		if duration < tc.minDuration {
+			t.Fatalf("requests were acquired at too quick of a rate! Total time was %v, should have been over %v", duration, tc.minDuration)
 		}
 	}
 }
@@ -42,17 +40,15 @@ func TestRateLimiter_Close(t *testing.T) {
 	r.Acquire(func() {})
 }
 
-func newAcquireTestCase(count int, minDelta, maxDelta time.Duration) (a acquireTestCase) {
+func newAcquireTestCase(count int, minDuration time.Duration) (a acquireTestCase) {
 	a.count = count
-	a.minDelta = minDelta
-	a.maxDelta = maxDelta
+	a.minDuration = minDuration
 	return
 }
 
 type acquireTestCase struct {
-	count    int
-	minDelta time.Duration
-	maxDelta time.Duration
+	count       int
+	minDuration time.Duration
 }
 
 func ExampleNew() {
