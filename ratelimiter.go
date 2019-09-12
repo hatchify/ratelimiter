@@ -16,7 +16,9 @@ func New(interval time.Duration) *RateLimiter {
 	// As a result, we can create a non-buffered channel to store
 	// requests
 	r.requests = make(chan *request)
+	// Begin polling the requests queue
 	go r.poll()
+	// Return a pointer to the initialized rate limiter
 	return &r
 }
 
@@ -24,9 +26,12 @@ func New(interval time.Duration) *RateLimiter {
 type RateLimiter struct {
 	mux sync.RWMutex
 
+	// Interval rate
 	interval time.Duration
+	// Requests queue
 	requests chan *request
 
+	// Closed state of rate limiter
 	closed bool
 }
 
@@ -43,7 +48,7 @@ func (r *RateLimiter) poll() {
 }
 
 // Acquire will request the next available window
-func (r *RateLimiter) Acquire(fn func()) {
+func (r *RateLimiter) Acquire(fn func()) (ok bool) {
 	r.mux.RLock()
 	defer r.mux.RUnlock()
 	// Check to see if rate limiter has been closed
@@ -58,6 +63,7 @@ func (r *RateLimiter) Acquire(fn func()) {
 	r.requests <- &req
 	// Wait until resumed
 	req.waiter.wait()
+	return true
 }
 
 // Close will close an instance of rate limiter
