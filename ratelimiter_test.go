@@ -7,7 +7,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	// If new instance is acquired without panics, we consider this test a pass
+	// If new rate limiter is acquired without panics, we consider this test a pass
 	New(time.Millisecond * 100)
 }
 func TestRateLimiter_Acquire(t *testing.T) {
