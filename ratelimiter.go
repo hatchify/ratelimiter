@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Hatch1fy/errors"
+	"github.com/hatchify/errors"
 )
 
 // New will return a new RateLimiter
